@@ -1,0 +1,3397 @@
+{
+  "name": "GitHub_Issue_Triage_workflow_v1.0",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4575fc1a-144d-471f-8696-95aa9018192c",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -352,
+        -288
+      ],
+      "id": "e4371869-0ec6-4091-849e-1fa5af13fb27",
+      "name": "githug issue",
+      "webhookId": "4575fc1a-144d-471f-8696-95aa9018192c"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1764598185,
+          "mode": "list",
+          "cachedResultName": "ReviewQueue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=1764598185"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "reason": "=missing_required_field",
+            "review_id": "={{ $json.issue_key }}",
+            "issue_key": "={{ $json.issue_key }}",
+            "original_title": "={{ $json.title }}",
+            "original_body": "={{ $json.body }}",
+            "suggested_priority": "=''",
+            "suggested_type": "=''",
+            "confidence": "=0",
+            "error_message": "=One or more required fields are missing",
+            "review_status": "=pending",
+            "created_at": "={{$now}}",
+            "resolution_notes": "=''"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "review_id",
+              "displayName": "review_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "issue_key",
+              "displayName": "issue_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "original_title",
+              "displayName": "original_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "original_body",
+              "displayName": "original_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_priority",
+              "displayName": "suggested_priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_type",
+              "displayName": "suggested_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "review_status",
+              "displayName": "review_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resolution_notes",
+              "displayName": "resolution_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        112,
+        80
+      ],
+      "id": "bce564ef-1fdc-4c09-82ef-11a18e3750b3",
+      "name": "invalid-record-to:ReviewQueue",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "081d7314-3089-442d-8f42-8dcedc4f14cc",
+              "name": "=issue_key",
+              "value": "={{ $json.body.repository.full_name + '#' + $json.body.issue.number}}",
+              "type": "string"
+            },
+            {
+              "id": "333a0238-f729-457a-9892-818eeb4de1b6",
+              "name": "=delivery_id",
+              "value": "={{ $json.headers['x-github-delivery'] || 'demo-delivery-001' }}",
+              "type": "string"
+            },
+            {
+              "id": "f3b77e39-3022-41f7-a063-49e049ebd2b6",
+              "name": "=repo",
+              "value": "={{ $json.body.repository.full_name }}",
+              "type": "string"
+            },
+            {
+              "id": "e416f3a4-c28f-47cf-9f48-68f9bf171792",
+              "name": "=issue_number",
+              "value": "={{ $json.body.issue.number }}",
+              "type": "number"
+            },
+            {
+              "id": "fc1d9e61-696a-4778-9acc-5e846b4d9d2a",
+              "name": "=title",
+              "value": "={{ $json.body.issue.title }}",
+              "type": "string"
+            },
+            {
+              "id": "73379977-527c-42db-802c-414ab4988ac8",
+              "name": "=body",
+              "value": "={{ $json.body.issue.body }}",
+              "type": "string"
+            },
+            {
+              "id": "3b7f3aab-2764-45ad-8522-94877bd8f4aa",
+              "name": "=url",
+              "value": "={{ $json.body.issue.html_url }}",
+              "type": "string"
+            },
+            {
+              "id": "03060a84-e915-4d93-ac4d-45dae3f2e5a7",
+              "name": "=author",
+              "value": "={{ $json.body.issue.user.login }}",
+              "type": "string"
+            },
+            {
+              "id": "18ab1c7b-2305-4f17-af44-29574f4e53e1",
+              "name": "=labels",
+              "value": "={{ ($json.body.issue.labels || []).map(labels => labels.name).join(',') }}",
+              "type": "string"
+            },
+            {
+              "id": "87b73072-9079-47db-8dfa-55985444aeb9",
+              "name": "=source_event",
+              "value": "={{ $json.body.action }}",
+              "type": "string"
+            },
+            {
+              "id": "dc25e84a-0f0a-4fe2-b5c0-ea159113d74d",
+              "name": "=created_at",
+              "value": "={{ $json.body.issue.created_at }}",
+              "type": "string"
+            },
+            {
+              "id": "0e556a29-6c77-4e72-b55c-7b5037b3ce81",
+              "name": "=updated_at",
+              "value": "={{ $json.body.issue.updated_at }}",
+              "type": "string"
+            },
+            {
+              "id": "11d1ccf5-ce27-4d1d-b890-9329b33b4094",
+              "name": "=status",
+              "value": "=new",
+              "type": "string"
+            },
+            {
+              "id": "597ee664-acd8-4b0a-af87-d5c538a666e2",
+              "name": "=api_enriched",
+              "value": "={{ false }}",
+              "type": "boolean"
+            },
+            {
+              "id": "781d3292-c30b-4fc0-85da-ebaa6b2fb8d4",
+              "name": "=processed_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -176,
+        -288
+      ],
+      "id": "730e8129-0fbd-4005-bdb9-3568ea227626",
+      "name": "NORMALIZE: Issue"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "844198ba-2714-4ba0-be2e-42a433e87e03",
+              "leftValue": "={{ $json.issue_key }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4f515328-d91d-46de-b917-977bfa7177b3",
+              "leftValue": "={{ $json.repo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0a63ec31-895f-4981-ac34-85b44060773e",
+              "leftValue": "={{ $json.issue_number }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "80f512ff-0d44-4674-ad12-eab0f78124b6",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e201d1e8-b80c-40b4-be01-9cb4b6df2bc7",
+              "leftValue": "={{ $json.url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "f5f7c67e-a021-487a-ab32-42fb32159731",
+      "name": "CHECK: req fields"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "MasterIssues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=issue_key",
+              "lookupValue": "={{ $json.issue_key }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        112,
+        -288
+      ],
+      "id": "9a185902-3406-4f30-9275-909d087a7cb1",
+      "name": "FIND:existing-issue",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4e2416d8-67e9-4d55-9324-a92f8c3d01b9",
+              "leftValue": "={{ $json.issue_key }}",
+              "rightValue": "={{ $json.issue_key }}",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9b1ea311-844a-4952-aa95-99facbc32831",
+              "leftValue": "={{ $json.issue_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "2370ff4e-f7e3-44e6-8944-cfc201bc0924",
+              "leftValue": "={{ $json.delivery_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9cf2bcb8-878c-410d-8574-677b4126f8d4",
+              "leftValue": "={{ $json.repo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4be1a1e2-73cf-428e-b844-b0eeecccc686",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "fef8ddc7-e9b8-4b4d-85a7-53b9780ed409",
+              "leftValue": "={{ $json.body }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        304,
+        -288
+      ],
+      "id": "a8e294f2-2917-474a-a29d-0af9ee4cb49f",
+      "name": "issue-already:EXISTS?",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cda907b6-eba8-4c53-b4a5-f10022af8137",
+              "name": "workflow_status",
+              "value": "Skipped_duplicate: issue already exists",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        544,
+        -448
+      ],
+      "id": "3c1d3a97-5814-431e-b1aa-368fe7890292",
+      "name": "already:PROCESSED",
+      "alwaysOutputData": false,
+      "notesInFlow": false,
+      "notes": "workflow status message for n8n logs: stating that issue already existed and no need to reprocess it again."
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $('NORMALIZE: Issue').item.json.repo }}/issues/{{ $('NORMALIZE: Issue').item.json.issue_number }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        544,
+        -192
+      ],
+      "id": "2097fc21-2705-4790-9ac9-5f497e213402",
+      "name": "GET: GitHub issue details",
+      "credentials": {
+        "githubApi": {
+          "id": "GRkWHXPYOS4NdEdj",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2a9d052e-2a93-4868-ab96-b6930d3fc6a6",
+              "name": "api_enriched",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        960,
+        -64
+      ],
+      "id": "418cd546-c461-4003-a451-af72f0a62ccf",
+      "name": "API call :SUCCESS?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0176c5f-ccc8-4d06-af44-8983195cd075",
+              "name": "search_text",
+              "value": "={{ (($json.title || '') + ' ' + ($json.body || '') + ' ' + JSON.stringify($json.labels || '')).toLowerCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1152,
+        -64
+      ],
+      "id": "ed84793c-0071-43ea-a218-3a67fb471d74",
+      "name": "PREPARE: priority text"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "08cf44ae-5d08-44ae-83a7-44ef872d605a",
+              "leftValue": "={{ $json.search_text }}",
+              "rightValue": "security",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "89cd23d9-5c5a-4b23-86f9-a4abe00e98b9",
+              "leftValue": "={{ $json.search_text }}",
+              "rightValue": "data loss",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "51aece0f-07d4-4a58-8917-259391baf4b5",
+              "leftValue": "={{ $json.search_text }}",
+              "rightValue": "production down",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": "=",
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1328,
+        -64
+      ],
+      "id": "acddef9f-4ef4-46d3-a012-4b919463dcdb",
+      "name": "urgent KEYwords"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e94252ef-8f4b-405b-872e-aeae2e58a023",
+              "leftValue": "= {{ $json.search_text }}",
+              "rightValue": "feature",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1552,
+        208
+      ],
+      "id": "d4f61162-3f4d-4162-bcb0-15ec50014042",
+      "name": "Is Feature?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e625311e-55fe-49c5-8541-a73f69dfe350",
+              "leftValue": "={{ ($json.labels || '').includes('bug') && (($json.body || '').toLowerCase().includes('reproduce') || ($json.body || '').toLowerCase().includes('expected behavior')) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1552,
+        -48
+      ],
+      "id": "48a8aeff-3bed-4190-959b-15bd4f0abfce",
+      "name": "Bug with Reproduction?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e46ff7de-16e0-4d6e-9d9c-85b0ef422837",
+              "name": "priority",
+              "value": "normal",
+              "type": "string"
+            },
+            {
+              "id": "a8cc7aba-8412-4d28-b0ce-8dec732293d3",
+              "name": "priority_reason",
+              "value": "feature requested",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1776,
+        112
+      ],
+      "id": "5e0c564b-3f79-44a5-aa1c-87411da21303",
+      "name": "SET: Normal tag"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb413835-93bf-4105-9083-5c328999398b",
+              "name": "priority",
+              "value": "high",
+              "type": "string"
+            },
+            {
+              "id": "ebd9f725-f6fe-4ebb-a035-64ff835ab6a4",
+              "name": "priority_reason",
+              "value": "bug with reproduction information",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1776,
+        -64
+      ],
+      "id": "dae995f1-5670-45ae-8da4-dbf7e53de690",
+      "name": "SET: High tag"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8ba0255f-32fa-407f-a8c6-95f6c3f691ff",
+              "name": "priority",
+              "value": "low",
+              "type": "string"
+            },
+            {
+              "id": "85d08030-ab9b-4ca6-bdb6-6e10a9af5cdb",
+              "name": "priority_reason",
+              "value": "no urgent, high, or feature rule matched",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1776,
+        288
+      ],
+      "id": "e4a8bd20-df42-42b1-91cb-7bc0ec6b45d6",
+      "name": "SET: Low tag"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dbe66dcc-d884-4cb4-a0dc-7438f33a0759",
+              "name": "ai_prompt",
+              "value": "=TASK: Classify the GitHub issue into exactly one allowed type.\nALLOWED_TYPES: bug | feature | security | question | other.\nRULES:\n- Use only the title and body.\n- Do not invent facts.\n- If evidence is insufficient, choose other.\n- Confidence must be a number from 0 to 1.\n\nINPUT_TITLE: {{ $json.title }}\nINPUT_BODY: {{ $json.body }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2048,
+        -64
+      ],
+      "id": "7c5c7b07-1945-470a-99fc-37c86f1c394d",
+      "name": "PREP: Ai input"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        -176
+      ],
+      "id": "0c6860fe-8696-41f3-ae48-dd3fe5805542",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "qrnguWUHoZX30MwN",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"issue_type\": {\n      \"type\": \"string\",\n      \"enum\": [\"bug\", \"feature\", \"security\", \"question\", \"other\"]\n    },\n    \"confidence\": {\n      \"type\": \"number\",\n      \"minimum\": 0,\n      \"maximum\": 1\n    },\n    \"needs_review\": {\n      \"type\": \"boolean\"\n    },\n    \"evidence\": {\n      \"type\": \"string\",\n      \"maxLength\": 160\n    }\n  },\n  \"required\": [\"issue_type\", \"confidence\", \"needs_review\", \"evidence\"],\n  \"additionalProperties\": false\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2448,
+        -176
+      ],
+      "id": "61ca020b-2050-4e41-a72a-67aab07b79cc",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4ed48168-4dac-44ad-9c03-349c03580a62",
+              "leftValue": "={{ $json.output.confidence }}",
+              "rightValue": 0.85,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "26e5b7b9-b99b-44c7-8b86-ff011fff0947",
+              "leftValue": "={{ $json.output.needs_review }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "26c93288-f498-41c0-81a8-3f16ec4e325d",
+              "leftValue": "={{ $json.output.issue_type }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2832,
+        -368
+      ],
+      "id": "cb1d23cd-a752-491c-b5a2-3d5d129e6d52",
+      "name": "CHECK: Ai result safe?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c113e0b5-3e24-4bd0-816b-eec1728900de",
+              "name": "reason",
+              "value": "ai_uncertain_or_invalid_data",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        3072,
+        32
+      ],
+      "id": "9af67903-bd4c-4cb2-a863-0cf39ef5e302",
+      "name": "FLAG: for Review"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2624,
+        -80
+      ],
+      "id": "61f4c333-0835-427f-a340-304aecbaeaf3",
+      "name": "ai input + llm output"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        768,
+        -64
+      ],
+      "id": "50d24824-cc08-4362-a5b3-d6b52c3a3000",
+      "name": "req fields + issue details"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.ai_prompt }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2288,
+        -352
+      ],
+      "id": "7e4bd5e1-75fb-4bda-b45c-ccf26de44aa1",
+      "name": "LLM: Output",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "MasterIssues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "issue_key": "={{ $json.issue_key }}",
+            "repo": "={{$json.repo}}",
+            "delivery_id": "={{ $json.delivery_id }}",
+            "issue_number": "={{ $json.issue_number }}",
+            "title": "={{ $json.title }}",
+            "body": "={{ $json.body }}",
+            "url": "={{ $json.url }}",
+            "author": "={{ $json.author }}",
+            "labels": "={{ $json.labels }}",
+            "issue_type": "={{ $json.output.issue_type }}",
+            "priority": "={{ $json.priority }}",
+            "status": "processed",
+            "confidence": "={{ $json.output.confidence }}",
+            "created_at": "={{ $json.created_at }}",
+            "updated_at": "={{ $json.updated_at }}",
+            "api_enriched": "={{ $json.api_enriched }}",
+            "source_event": "={{ $json.source_event }}",
+            "processed_at": "={{ $json.processed_at }}",
+            "priority_reason": "={{ $json.priority_reason }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "issue_key",
+              "displayName": "issue_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "repo",
+              "displayName": "repo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "issue_number",
+              "displayName": "issue_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labels",
+              "displayName": "labels",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "issue_type",
+              "displayName": "issue_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "priority_reason",
+              "displayName": "priority_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "api_enriched",
+              "displayName": "api_enriched",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source_event",
+              "displayName": "source_event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3072,
+        -176
+      ],
+      "id": "06c83ef4-e38f-47cb-96b7-1f5475c08b32",
+      "name": "WRITE: MasterIssues",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3edc5a6a-d35b-4bc9-bfdc-a8097ebb7ecc",
+              "name": "workflow_status",
+              "value": "Invalid record or missing fields found, set to ReviewQueue for review",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        304,
+        80
+      ],
+      "id": "46948eb4-4ca3-4523-bfa6-c12f1b512cf6",
+      "name": "INVALID: records"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "68642fb8-a053-4e5e-a892-171698cf54dd",
+              "leftValue": "={{ $json.priority }}",
+              "rightValue": "urgent",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3248,
+        -176
+      ],
+      "id": "f8be4deb-ba99-44ba-9b2b-44364d10a7b7",
+      "name": "URGENT?"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2045053189,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=2045053189"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.issue_number || ''}}-{{ $execution.id }}",
+            "workflow_name": "IssueFlow - Receive GitHub Issue",
+            "delivery_id": "={{ $json.delivery_id }}",
+            "started_at": "={{ $json.created_at }}",
+            "finished_at": "={{ $now }}",
+            "result": "success",
+            "items_received": "1",
+            "items_written": "1",
+            "notes": "issue processed successfully",
+            "model": "=openai/gpt-oss-20b",
+            "provider": "groq free",
+            "error_summary": "={{ $('CHECK: Ai result safe?').item.json.output.evidence }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "started_at",
+              "displayName": "started_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finished_at",
+              "displayName": "finished_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_received",
+              "displayName": "items_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_written",
+              "displayName": "items_written",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_summary",
+              "displayName": "error_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3472,
+        -160
+      ],
+      "id": "4920bb85-6256-4792-96cb-30ed95bf426d",
+      "name": "WRITE: success RunLog",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2045053189,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=2045053189"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.number || ''}}-{{ $execution.id }}",
+            "workflow_name": "IssueFlow - Receive GitHub Issue",
+            "delivery_id": "={{ $json.delivery_id }}",
+            "started_at": "=",
+            "finished_at": "={{ $now }}",
+            "result": "duplicate_ignored",
+            "items_received": "1",
+            "notes": "={{ $json.workflow_status }}",
+            "items_written": "0"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "started_at",
+              "displayName": "started_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finished_at",
+              "displayName": "finished_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_received",
+              "displayName": "items_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_written",
+              "displayName": "items_written",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_summary",
+              "displayName": "error_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        -448
+      ],
+      "id": "67dbd5b2-c7e2-4818-8e7b-b0f36a8c5cf6",
+      "name": "WRITE: Duplicate RunLog",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2045053189,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=2045053189"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.number || ''}}-{{ $execution.id }}",
+            "workflow_name": "IssueFlow - Receive GitHub Issue",
+            "delivery_id": "={{ $('Bug with Reproduction?').item.json.delivery_id }}",
+            "started_at": "={{ $('Bug with Reproduction?').item.json.created_at }}",
+            "finished_at": "={{ $now }}",
+            "result": "ai_review",
+            "items_received": "1",
+            "notes": "={{ $json.reason }}",
+            "items_written": "0",
+            "error_summary": "={{ $json.reason }} - {{ $('Bug with Reproduction?').item.json.html_url }}",
+            "model": "=-",
+            "provider": "=-"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "started_at",
+              "displayName": "started_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finished_at",
+              "displayName": "finished_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_received",
+              "displayName": "items_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_written",
+              "displayName": "items_written",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_summary",
+              "displayName": "error_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3472,
+        32
+      ],
+      "id": "85e92fee-8db0-49ed-b055-161a6ee8d77e",
+      "name": "WRITE: Ai Failure RunLog",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2045053189,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=2045053189"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.number || ''}}-{{ $execution.id }}",
+            "workflow_name": "IssueFlow - Receive GitHub Issue",
+            "delivery_id": "={{ $json.delivery_id }}",
+            "started_at": "=",
+            "finished_at": "={{ $now }}",
+            "result": "Invalid_record_entry",
+            "items_received": "1",
+            "notes": "={{ $json.workflow_status }}",
+            "items_written": "0",
+            "error_summary": "invalid or missing fields found"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "started_at",
+              "displayName": "started_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finished_at",
+              "displayName": "finished_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_received",
+              "displayName": "items_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_written",
+              "displayName": "items_written",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_summary",
+              "displayName": "error_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        80
+      ],
+      "id": "bb15d15e-0948-4099-8997-332aa78f5889",
+      "name": "WRITE: Invalid Record RunLog",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fc4de159-8ace-4b2f-8e5e-85e5e5f8f64f",
+              "name": "priority",
+              "value": "urgent",
+              "type": "string"
+            },
+            {
+              "id": "973cca96-e55e-4f47-becd-664e2fa682e8",
+              "name": "priority_reason",
+              "value": "urgent keyword detected",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1776,
+        -224
+      ],
+      "id": "9ea3ba61-d710-4493-a88d-0b995b8b56eb",
+      "name": "SET: Urgent tag",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d4036d78-aeb8-471b-a7b2-a4f2c5b07036",
+              "leftValue": "={{ $json.source_event }}",
+              "rightValue": "opened",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "f57141ca-eac1-4ea5-b064-e40506696f9a",
+              "leftValue": "={{ $json.source_event }}",
+              "rightValue": "reopened",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        -16
+      ],
+      "id": "b96d246b-ce29-442c-803d-c5bc7eb1a33c",
+      "name": "New Issue?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cda907b6-eba8-4c53-b4a5-f10022af8137",
+              "name": "workflow_status",
+              "value": "=duplicate_entry_reason:({{ $json.source_event }})",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -320,
+        272
+      ],
+      "id": "9ede5223-1106-4d3a-b165-65efcedda974",
+      "name": "issue reopened/closed",
+      "alwaysOutputData": false,
+      "notesInFlow": false,
+      "notes": "workflow status message for n8n logs: stating that issue already existed and no need to reprocess it again."
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2045053189,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=2045053189"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $execution.id }}",
+            "workflow_name": "IssueFlow - Receive GitHub Issue",
+            "delivery_id": "={{ $json.delivery_id }}",
+            "started_at": "=",
+            "finished_at": "={{ $now }}",
+            "result": "duplicate_ignored",
+            "items_received": "1",
+            "notes": "={{ $json.workflow_status }}",
+            "items_written": "0",
+            "error_summary": "={{$json.labels || ''}}; link> {{ $json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "started_at",
+              "displayName": "started_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finished_at",
+              "displayName": "finished_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_received",
+              "displayName": "items_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_written",
+              "displayName": "items_written",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_summary",
+              "displayName": "error_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -80,
+        272
+      ],
+      "id": "6ad97794-3075-446c-8b38-262af779f6b6",
+      "name": "WRITE: previous issues",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Tagging-issues\n- Following nodes are used to tag priority",
+        "height": 912,
+        "width": 166,
+        "color": "#202900"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        -448
+      ],
+      "id": "dcd15797-fd64-4344-832a-19e3d4ad503b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## LLM-working\n**Job** to take input from previous nodes and classify them into category for MasterIssues sheet.\n\n**outputs**\n- catagory\n- confidence\n- summary\n- needs_review",
+        "height": 560,
+        "width": 768,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -448
+      ],
+      "id": "97211180-8e4e-4f2b-a80a-58b7880c3866",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## WRITE and notify \n**Write** date to MasterIssues after confirmation of new issue recieved\n**Notify** notification based on urgent issue, or ai failure to recognise issue relevance ",
+        "height": 880,
+        "width": 704,
+        "color": "#001729"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        -480
+      ],
+      "id": "19c863ac-05b2-4b0c-9a2e-4ea19e369feb",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0643baea-7c08-4987-bf4c-c79b22cab674",
+              "name": "error_reason",
+              "value": "={{ $json.error.description }}",
+              "type": "string"
+            },
+            {
+              "id": "fcb19634-0efb-4f34-85d1-5b88bd294106",
+              "name": "error_code",
+              "value": "={{ $json.details.httpCode }}",
+              "type": "string"
+            },
+            {
+              "id": "e3ec49f4-bfa9-4adb-b4d1-4abd82500c2e",
+              "name": "error_msg",
+              "value": "={{ $json.error.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        768,
+        -256
+      ],
+      "id": "a1f37f0e-7d62-499f-959b-349c9a7c20b0",
+      "name": "GitHub: API failure"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1764598185,
+          "mode": "list",
+          "cachedResultName": "ReviewQueue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=1764598185"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "reason": "={{ $json.error_reason }}",
+            "review_id": "={{ $json.issue_key }}",
+            "issue_key": "={{ $json.issue_key }}",
+            "original_title": "={{ $json.title }}",
+            "original_body": "={{ $json.body }}",
+            "suggested_priority": "=urgent",
+            "suggested_type": "={{ $json.error_code }}",
+            "review_status": "=pending",
+            "created_at": "={{$now}}",
+            "resolution_notes": "={{ $json.error_reason }}:{{ $json.error_code }}:{{ $json.error_msg }}",
+            "error_message": "={{ $json.error.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "review_id",
+              "displayName": "review_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "issue_key",
+              "displayName": "issue_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "original_title",
+              "displayName": "original_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "original_body",
+              "displayName": "original_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_priority",
+              "displayName": "suggested_priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_type",
+              "displayName": "suggested_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "review_status",
+              "displayName": "review_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resolution_notes",
+              "displayName": "resolution_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        -256
+      ],
+      "id": "8e3d542d-a169-40d5-873e-9196feb05c8e",
+      "name": "github-api-failure :ReviewQueue",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2045053189,
+          "mode": "list",
+          "cachedResultName": "RunLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=2045053189"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.number || ''}}-{{ $execution.id }}",
+            "workflow_name": "IssueFlow - Receive GitHub Issue",
+            "delivery_id": "={{ $('NORMALIZE: Issue').item.json.delivery_id }}",
+            "started_at": "=",
+            "finished_at": "={{ $now }}",
+            "result": "={{ $json.reason }}",
+            "items_received": "1",
+            "notes": "={{ $json.resolution_notes }}",
+            "items_written": "0",
+            "error_summary": "={{ $json.suggested_type }}:{{ $json.error_message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delivery_id",
+              "displayName": "delivery_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "started_at",
+              "displayName": "started_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finished_at",
+              "displayName": "finished_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_received",
+              "displayName": "items_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_written",
+              "displayName": "items_written",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_summary",
+              "displayName": "error_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1152,
+        -256
+      ],
+      "id": "75e5bfa9-4df0-4c54-bab8-57bf8c53a00e",
+      "name": "WRITE: error RunLog",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1764598185,
+          "mode": "list",
+          "cachedResultName": "ReviewQueue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=1764598185"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "reason": "={{ $json.reason }}",
+            "review_id": "={{ $json.number }}-{{ $execution.id }}",
+            "issue_key": "={{ $json.issue_key }}",
+            "original_title": "={{ $json.title }}",
+            "original_body": "={{ $json.body }}",
+            "suggested_priority": "={{ $json.priority }}; {{ $json.priority_reason }}",
+            "suggested_type": "={{ $json.output.issue_type }}",
+            "confidence": "={{ $json.output.confidence }}",
+            "error_message": "={{ $json.output.evidence }}",
+            "review_status": "=pending",
+            "created_at": "={{$now}}",
+            "resolution_notes": "=url>{{ $json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "review_id",
+              "displayName": "review_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "issue_key",
+              "displayName": "issue_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "original_title",
+              "displayName": "original_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "original_body",
+              "displayName": "original_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_priority",
+              "displayName": "suggested_priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suggested_type",
+              "displayName": "suggested_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "review_status",
+              "displayName": "review_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resolution_notes",
+              "displayName": "resolution_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3248,
+        224
+      ],
+      "id": "9ad10800-5c53-4483-b75b-e6defa20a274",
+      "name": "ai_output :ReviewQueue",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ntfy.sh/your_topic_here",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "text",
+        "body": "=⚠️Please Review: {{$json.reason}}\n\n  Review_ID: {{ $json.review_id }}\n  ISSUE: {{ $('urgent KEYwords').item.json.title }}\n  LABELS: {{ $('urgent KEYwords').item.json.labels || 'no-label'}}\n  PRIORITY: {{ $json.suggested_priority }}\n  KEY: {{ $('urgent KEYwords').item.json.issue_key }}\n  TIME: {{ $('urgent KEYwords').item.json.processed_at }}\n\n> URL: {{ $('urgent KEYwords').item.json.url }}\n\n> issue_type:{{ $json.suggested_type }};\n> ai_confidence:{{ $json.confidence }};\n> ai_remarks:{{ $json.error_message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        3472,
+        224
+      ],
+      "id": "47fb535d-76d6-4491-8aef-823c2fbcdfe6",
+      "name": "SEND: ntfy ai-Alert"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ntfy.sh/your_topic_here",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "text",
+        "body": "=🚨 URGENT BUG DETECTED 🚨\n\n  Issue: {{ $json.title }}\n  Reason: {{ $json.priority_reason }}\n  Key: {{ $json.issue_key }}\n  Time: {{ $json.processed_at }}\n\nLink: {{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        3472,
+        -368
+      ],
+      "id": "e914b165-eda6-4f5f-a0ec-5450976e964b",
+      "name": "SEND: ntfy urgent-Alert"
+    },
+    {
+      "parameters": {
+        "content": "## GitHub Issue Triage with n8n\n> An event-driven automation that receives GitHub issue events,\n> normalizes and enriches them,\n> assigns transparent priority,\n> optionally classifies issue type with AI,\n> and records the result in Google Sheets.",
+        "height": 1008,
+        "width": 4176,
+        "color": "#001910"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -512
+      ],
+      "id": "7603a567-3f34-496e-8593-687f455daca5",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "githug issue": {
+      "main": [
+        [
+          {
+            "node": "NORMALIZE: Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NORMALIZE: Issue": {
+      "main": [
+        [
+          {
+            "node": "New Issue?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CHECK: req fields": {
+      "main": [
+        [
+          {
+            "node": "FIND:existing-issue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "req fields + issue details",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "invalid-record-to:ReviewQueue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FIND:existing-issue": {
+      "main": [
+        [
+          {
+            "node": "issue-already:EXISTS?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "issue-already:EXISTS?": {
+      "main": [
+        [
+          {
+            "node": "already:PROCESSED",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GET: GitHub issue details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET: GitHub issue details": {
+      "main": [
+        [
+          {
+            "node": "req fields + issue details",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GitHub: API failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API call :SUCCESS?": {
+      "main": [
+        [
+          {
+            "node": "PREPARE: priority text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PREPARE: priority text": {
+      "main": [
+        [
+          {
+            "node": "urgent KEYwords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "urgent KEYwords": {
+      "main": [
+        [
+          {
+            "node": "SET: Urgent tag",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bug with Reproduction?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bug with Reproduction?": {
+      "main": [
+        [
+          {
+            "node": "SET: High tag",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Feature?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Feature?": {
+      "main": [
+        [
+          {
+            "node": "SET: Normal tag",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SET: Low tag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET: High tag": {
+      "main": [
+        [
+          {
+            "node": "PREP: Ai input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET: Normal tag": {
+      "main": [
+        [
+          {
+            "node": "PREP: Ai input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET: Low tag": {
+      "main": [
+        [
+          {
+            "node": "PREP: Ai input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PREP: Ai input": {
+      "main": [
+        [
+          {
+            "node": "LLM: Output",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ai input + llm output",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM: Output",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "LLM: Output",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CHECK: Ai result safe?": {
+      "main": [
+        [
+          {
+            "node": "WRITE: MasterIssues",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FLAG: for Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ai input + llm output": {
+      "main": [
+        [
+          {
+            "node": "CHECK: Ai result safe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "req fields + issue details": {
+      "main": [
+        [
+          {
+            "node": "API call :SUCCESS?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM: Output": {
+      "main": [
+        [
+          {
+            "node": "ai input + llm output",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FLAG: for Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "already:PROCESSED": {
+      "main": [
+        [
+          {
+            "node": "WRITE: Duplicate RunLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "invalid-record-to:ReviewQueue": {
+      "main": [
+        [
+          {
+            "node": "INVALID: records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WRITE: MasterIssues": {
+      "main": [
+        [
+          {
+            "node": "URGENT?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URGENT?": {
+      "main": [
+        [
+          {
+            "node": "SEND: ntfy urgent-Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WRITE: success RunLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FLAG: for Review": {
+      "main": [
+        [
+          {
+            "node": "WRITE: Ai Failure RunLog",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ai_output :ReviewQueue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INVALID: records": {
+      "main": [
+        [
+          {
+            "node": "WRITE: Invalid Record RunLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET: Urgent tag": {
+      "main": [
+        [
+          {
+            "node": "PREP: Ai input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Issue?": {
+      "main": [
+        [
+          {
+            "node": "CHECK: req fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "issue reopened/closed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WRITE: Ai Failure RunLog": {
+      "main": [
+        []
+      ]
+    },
+    "issue reopened/closed": {
+      "main": [
+        [
+          {
+            "node": "WRITE: previous issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub: API failure": {
+      "main": [
+        [
+          {
+            "node": "github-api-failure :ReviewQueue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "github-api-failure :ReviewQueue": {
+      "main": [
+        [
+          {
+            "node": "WRITE: error RunLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ai_output :ReviewQueue": {
+      "main": [
+        [
+          {
+            "node": "SEND: ntfy ai-Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND: ntfy urgent-Alert": {
+      "main": [
+        [
+          {
+            "node": "WRITE: success RunLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Karachi",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "8c0f195e-5022-4411-8af8-4038d088cf26",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc356f54b4278636c267f2064add3f56d2fd2b6210935dd69b509b891a39baa1"
+  },
+  "nodeGroups": [],
+  "id": "MoLmlrQiQ6p8ADOG",
+  "tags": [
+    {
+      "name": "triage",
+      "id": "DddkkpSYY6zWrbAV",
+      "updatedAt": "2026-09-24T03:43:24.382Z",
+      "createdAt": "2026-09-24T03:43:24.382Z"
+    },
+    {
+      "updatedAt": "2026-09-19T21:12:11.085Z",
+      "createdAt": "2026-09-19T21:12:11.085Z",
+      "id": "VZtXUE0agsJL3TXW",
+      "name": "github"
+    }
+  ]
+}

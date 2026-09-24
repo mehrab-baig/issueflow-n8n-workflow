@@ -1,0 +1,492 @@
+{
+  "name": "github-issue-triage-daily-digest-v1.0",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        160
+      ],
+      "id": "df6891a6-55db-4d81-8b38-7778a66831b3",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        384
+      ],
+      "id": "182c2b41-4c5a-4235-9216-9d0f11e8af02",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "MasterIssues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        160
+      ],
+      "id": "358bd9af-7e7f-4f8d-aa4a-4bdfc041d329",
+      "name": "GET: open issues",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4747c726-adfb-46a3-8e93-4d82616b3af1",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "resolved",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        160
+      ],
+      "id": "d785046c-d3da-49c6-a6af-f22815142b49",
+      "name": "Filter: opened issues"
+    },
+    {
+      "parameters": {
+        "jsCode": "let total = 0, urgent = 0, high = 0, normal = 0, low = 0;\nlet bugs = 0, features = 0, questions = 0, review = 0;\n\n// Loop through every issue we got from the Filter node\nfor (const item of $input.all()) {\n  total++;\n  \n  let priority = item.json.priority || '';\n  let type = item.json.issue_type || '';\n\n  // Count Priorities\n  if (priority === 'urgent') urgent++;\n  if (priority === 'high') high++;\n  if (priority === 'normal') normal++;\n  if (priority === 'low') low++;\n\n  // Count Types\n  if (type === 'bug') bugs++;\n  if (type === 'feature') features++;\n  if (type === 'question') questions++;\n  if (type === 'other' || type === '') review++;\n}\n\n// Output one single summary card\nreturn [{\n  json: {\n    total_open: total,\n    urgent: urgent,\n    high: high,\n    normal: normal,\n    low: low,\n    bugs: bugs,\n    features: features,\n    questions: questions,\n    needs_review: review\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        160
+      ],
+      "id": "84230050-e8a5-41ae-b1ed-4cb97e05c387",
+      "name": "Count: open_issues"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1776495093,
+          "mode": "list",
+          "cachedResultName": "DailyDigest",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=1776495093"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "digest_key",
+              "lookupValue": "={{ $json.digest_key }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        160
+      ],
+      "id": "25744893-0d39-4bbe-8907-e18f6672483d",
+      "name": "CHECK: existing digest",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "122baa35-6c31-49f3-9de0-e35b18d2f8f1",
+              "leftValue": "={{ $json.digest_key }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        160
+      ],
+      "id": "e6fe0214-29df-4ec3-9bcb-d6c5c4d663e2",
+      "name": "ALREADY sent today?"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1776495093,
+          "mode": "list",
+          "cachedResultName": "DailyDigest",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yLfMkwkv_tVnbbm-iHoKyYS61vcWH3_aa4Cc3nLYOO0/edit#gid=1776495093"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "digest_key": "={{ $('ADD:date_key').item.json.digest_key }}",
+            "total_open": "={{ $('ADD:date_key').item.json.total_open }}",
+            "urgent": "={{ $('ADD:date_key').item.json.urgent }}",
+            "high": "={{ $('ADD:date_key').item.json.high }}",
+            "normal": "={{ $('ADD:date_key').item.json.normal }}",
+            "bugs": "={{ $('ADD:date_key').item.json.bugs }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "digest_key",
+              "displayName": "digest_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_open",
+              "displayName": "total_open",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "urgent",
+              "displayName": "urgent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "high",
+              "displayName": "high",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "normal",
+              "displayName": "normal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "bugs",
+              "displayName": "bugs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1440,
+        176
+      ],
+      "id": "6499a07b-fc01-473f-82b5-0ff698787150",
+      "name": "WRITE: DailyDigest",
+      "credentials": {
+        "googleApi": {
+          "id": "x4hOSHapI4t92gG8",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9108b459-16e9-4cc3-9ff8-6a6d8ba5b225",
+              "name": "digest_key",
+              "value": "={{ $now.toFormat('yyyy-MM-dd') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        832,
+        160
+      ],
+      "id": "22fb6752-21f2-42f8-a99b-efe44e042425",
+      "name": "ADD:date_key"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "730c501c-55b4-429b-a83f-e40776604c8a",
+              "name": "workflow_status",
+              "value": "=Skipped {{ $json.row_number }}: Digest already sent.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "31c4f4d2-1103-4b18-88bd-cf7f82417044",
+      "name": "Already Sent"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ntfy.sh/your_topic_here",
+        "sendBody": true,
+        "contentType": "raw",
+        "body": "=📊 DAILY ISSUE DIGEST ({{ $('ADD:date_key').item.json.digest_key }})\n\n-----------------------------------\n Total Open Issues: {{ $('ADD:date_key').item.json.total_open }}\n -=-=-=-=-=-=-=-=-=-=-=-=-\n Urgent: {{ $('ADD:date_key').item.json.urgent }}\n High: {{ $('ADD:date_key').item.json.high }}\n Normal: {{ $('ADD:date_key').item.json.normal }}\n Low: {{ $('ADD:date_key').item.json.low }}\n ----------------------------------\n Bugs: {{ $('ADD:date_key').item.json.bugs }} | Features: {{ $('ADD:date_key').item.json.features }}\n ----------------------------------",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1632,
+        176
+      ],
+      "id": "553e9b89-a268-4d7a-a9a8-de05e1387c24",
+      "name": "SEND: ntfy-alert"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "GET: open issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET: open issues": {
+      "main": [
+        [
+          {
+            "node": "Filter: opened issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: opened issues": {
+      "main": [
+        [
+          {
+            "node": "Count: open_issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count: open_issues": {
+      "main": [
+        [
+          {
+            "node": "ADD:date_key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CHECK: existing digest": {
+      "main": [
+        [
+          {
+            "node": "ALREADY sent today?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ALREADY sent today?": {
+      "main": [
+        [
+          {
+            "node": "Already Sent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WRITE: DailyDigest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADD:date_key": {
+      "main": [
+        [
+          {
+            "node": "CHECK: existing digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WRITE: DailyDigest": {
+      "main": [
+        [
+          {
+            "node": "SEND: ntfy-alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET: open issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Karachi",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "saveExecutionProgress": true
+  },
+  "versionId": "05d47347-bd59-453c-b3b9-d28c24243ff6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc356f54b4278636c267f2064add3f56d2fd2b6210935dd69b509b891a39baa1"
+  },
+  "nodeGroups": [],
+  "id": "222MbhOupvOlNlZ7",
+  "tags": []
+}
