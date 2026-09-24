@@ -1,0 +1,23 @@
+[
+  {
+    "issue_key": "mehrab-baig/issueflow-n8n-workflow#13",
+    "repo": "mehrab-baig/issueflow-n8n-workflow",
+    "delivery_id": "14958c16-b62d-11f1-8710-3fa67a1e5d4e",
+    "issue_number": 13,
+    "title": "Live Test: App crashes on login screen",
+    "body": "Steps to reproduce: open the app, type password, click login, and it crashes completely.",
+    "url": "https://github.com/mehrab-baig/issueflow-n8n-workflow/issues/13",
+    "author": "mehrab-baig",
+    "labels": "bug",
+    "issue_type": "bug",
+    "priority": "high",
+    "status": "processed",
+    "confidence": 0.98,
+    "created_at": "2026-09-22T02:26:54Z",
+    "updated_at": "2026-09-22T02:26:54Z",
+    "api_enriched": true,
+    "source_event": "opened",
+    "processed_at": "2026-09-22T07:26:57.434+05:00",
+    "priority_reason": "bug with reproduction information"
+  }
+]

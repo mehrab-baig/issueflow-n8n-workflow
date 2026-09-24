@@ -1,0 +1,16 @@
+[
+  {
+    "reason": "ai_uncertain_or_invalid_data",
+    "review_id": "19-459",
+    "issue_key": "mehrab-baig/issueflow-n8n-workflow#19",
+    "original_title": "ai pizza test",
+    "original_body": "testing the ai with pepperoni pizza",
+    "suggested_priority": "low; no urgent, high, or feature rule matched",
+    "suggested_type": "other",
+    "confidence": 0.6,
+    "error_message": "The issue appears to be about testing AI with pizza, not a bug, feature, security, or question.",
+    "review_status": "pending",
+    "created_at": "2026-09-23T16:30:44.735+05:00",
+    "resolution_notes": "url>https://github.com/mehrab-baig/issueflow-n8n-workflow/issues/19"
+  }
+]

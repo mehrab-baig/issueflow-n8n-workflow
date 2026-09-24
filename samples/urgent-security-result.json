@@ -1,0 +1,23 @@
+[
+  {
+    "issue_key": "mehrab-baig/issueflow-n8n-workflow#17",
+    "repo": "mehrab-baig/issueflow-n8n-workflow",
+    "delivery_id": "e64999ce-b677-11f1-9f22-4af3a0c47a8c",
+    "issue_number": 17,
+    "title": "CRITICAL: Major security vulnerability found",
+    "body": "Production down! We are experiencing data loss when users try to check out.",
+    "url": "https://github.com/mehrab-baig/issueflow-n8n-workflow/issues/17",
+    "author": "mehrab-baig",
+    "labels": "bug,security",
+    "issue_type": "security",
+    "priority": "urgent",
+    "status": "processed",
+    "confidence": 0.95,
+    "created_at": "2026-09-22T11:22:29Z",
+    "updated_at": "2026-09-22T11:22:29Z",
+    "api_enriched": true,
+    "source_event": "opened",
+    "processed_at": "2026-09-22T16:22:32.518+05:00",
+    "priority_reason": "urgent keyword detected"
+  }
+]
