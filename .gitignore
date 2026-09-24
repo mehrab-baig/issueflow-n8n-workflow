@@ -1,2 +1,16 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables & Secrets
+.env
+*.pem
+*.key
+
+# Ignore raw n8n exports that haven't been sanitized
+# (Only allow .example.json files in the workflows folder)
+workflows/*.json
+!workflows/*.example.json
+
 .kilo
 
