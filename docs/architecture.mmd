@@ -1,0 +1,17 @@
+graph TD
+    A[GitHub Webhook] --> B{Is New Issue?}
+    B -- Yes --> C{Required Fields?}
+    B -- No --> D[RunLog: Ignored]
+    C -- Yes --> E{Already Exists?}
+    C -- No --> F[ReviewQueue]
+    E -- No --> G[GitHub API Enrichment]
+    E -- Yes --> H[RunLog: Duplicate]
+    G --> I[Priority Rules & AI Classification]
+    I --> J{AI Safe?}
+    J -- Yes --> K[(MasterIssues Sheet)]
+    J -- No --> F
+    K --> L{Is Urgent?}
+    L -- Yes --> M[ntfy.sh Alert]
+    L -- No --> N[RunLog: Success]
+    M --> N
+
