@@ -1,262 +1,261 @@
-\# IssueFlow Test Suite
+# IssueFlow Test Suite
 
 
 
-> \*\*Note on GitHub Webhook Behavior:\*\* When opening a new issue, GitHub often fires multiple `source\_events` simultaneously (such as `opened`, `labeled`, or `edited`). To prevent race conditions and duplicate processing, this workflow uses a front-door bouncer node ("New issue?") to ensure only `opened` and `reopened` events are processed. All other events are safely rejected and documented in the `RunLog`. This minimizes irrelevant executions and protects the database.
+> **Note on GitHub Webhook Behavior:** When opening a new issue, GitHub often fires multiple `source_events` simultaneously (such as `opened`, `labeled`, or `edited`). To prevent race conditions and duplicate processing, this workflow uses a front-door bouncer node ("New issue?") to ensure only `opened` and `reopened` events are processed. All other events are safely rejected and documented in the `RunLog`. This minimizes irrelevant executions and protects the database.
 
 
 
-\---
+---
+<br>
 
+## T01: Valid bug with reproduction steps
 
+ * **Input fixture:** GitHub Issue: "Live Test: App crashes on login screen"
 
-\## T01: Valid bug with reproduction steps
+ * **Expected result:** MasterIssues row, high priority
 
-\* \*\*Input fixture:\*\* GitHub Issue: "Live Test: App crashes on login screen"
+ * **Actual result:** Row successfully appended with 'high' priority.
 
-\* \*\*Expected result:\*\* MasterIssues row, high priority
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Row successfully appended with 'high' priority.
+ * **n8n execution ID:** ID#386
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Screenshot path:** [`screenshots/T01.png`](screenshots/T01.png)
 
-\* \*\*n8n execution ID:\*\* ID#386
+ * **What changed:** 1 row appended to MasterIssues, 2 rows added to RunLog (for `opened` and `labeled` events respectively).
 
-\* \*\*Screenshot path:\*\* `screenshots/T01.png`
 
-\* \*\*What changed:\*\* 1 row appended to MasterIssues, 2 rows added to RunLog (for `opened` and `labeled` events respectively).
 
+## T02: Feature request
 
+* **Input fixture:** GitHub Issue: "Feature Request: Add dark mode" (with feature label/keywords)
 
-\## T02: Feature request
+* **Expected result:** MasterIssues row, normal priority
 
-\* \*\*Input fixture:\*\* GitHub Issue: "Feature Request: Add dark mode" (with feature label/keywords)
+* **Actual result:** Row successfully appended with 'normal' priority.
 
-\* \*\*Expected result:\*\* MasterIssues row, normal priority
+* **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Row successfully appended with 'normal' priority.
+* **n8n execution ID:** ID#404
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+* **Screenshot path:** [`screenshots/T02.png`](screenshots/T02.png)
 
-\* \*\*n8n execution ID:\*\* ID#404
+* **What changed:** 1 row appended to MasterIssues, 2 rows added to RunLog (for `opened` and `labeled` events).
 
-\* \*\*Screenshot path:\*\* `screenshots/T02.png`
 
-\* \*\*What changed:\*\* 1 row appended to MasterIssues, 2 rows added to RunLog (for `opened` and `labeled` events).
 
+## T03: Security/production issue
 
+* **Input fixture:** GitHub Issue: "CRITICAL: Major security vulnerability found" (with bugs, security label/keywords)
 
-\## T03: Security/production issue
+* **Expected result:** MasterIssues row, urgent priority and alert generated
 
-\* \*\*Input fixture:\*\* GitHub Issue: "CRITICAL: Major security vulnerability found" (with bugs, security label/keywords)
+* **Actual result:** Row appended successfully, ntfy alert triggered.
 
-\* \*\*Expected result:\*\* MasterIssues row, urgent priority and alert generated
+* **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Row appended successfully, ntfy alert triggered.
+* **n8n execution ID:** ID#407
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+* **Screenshot path:** [`screenshots/T03.png`](screenshots/T03.png), [`screenshots/T03_ntfy_alert.png`](screenshots/T03_ntfy_alert.png)
 
-\* \*\*n8n execution ID:\*\* ID#407
+* **What changed:** 1 row added to MasterIssues, 2 row added to RunLog, ntfy alert webhook fired.
 
-\* \*\*Screenshot path:\*\* `screenshots/T03.png`, `screenshots/T03\_ntfy\_alert.png`
 
-\* \*\*What changed:\*\* 1 row added to MasterIssues, 2 row added to RunLog, ntfy alert webhook fired.
 
+## T04: Missing title
 
+* **Input fixture:** Pinned webhook data: "body.issue.title set to empty, `x-github-delivery` fake value set"
 
-\## T04: Missing title
+* **Expected result:** ReviewQueue row, RunLog row, no API call
 
-\* \*\*Input fixture:\*\* Pinned webhook data: "body.issue.title set to empty, `x-github-delivery` fake value set"
+* **Actual result:** Rejected by `CHECK: req fields` if-node, route to false branch, appended to `ReviewQueue`.
 
-\* \*\*Expected result:\*\* ReviewQueue row, RunLog row, no API call
+* **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Rejected by `CHECK: req fields` if-node, route to false branch, appended to `ReviewQueue`.
+* **n8n execution ID:** ID#413
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+* **Screenshot path:** [`screenshots/T04.png`](screenshots/T04.png)
 
-\* \*\*n8n execution ID:\*\* ID#413
+* **What changed:** 1 row added to ReviewQueue, 1 row appended to RunLog.
 
-\* \*\*Screenshot path:\*\* `screenshots/T04.png`
 
-\* \*\*What changed:\*\* 1 row added to ReviewQueue, 1 row appended to RunLog.
 
+## T05: Missing repository
 
+* **Input fixture:** Pinned webhook data with `body.repository.full_name` set to empty string.
 
-\## T05: Missing repository
+* **Expected result:** ReviewQueue row appended, no API call
 
-\* \*\*Input fixture:\*\* Pinned webhook data with body.repository.full\_name set to empty string.
+* **Actual result:** Rejected by required fields validation, appended to ReviewQueue.
 
-\* \*\*Expected result:\*\* ReviewQueue row appended, no API call
+* **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Rejected by required fields validation, appended to ReviewQueue.
+* **n8n execution ID:** ID#414
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+* **Screenshot path:** [`screenshots/T05.png`](screenshots/T05.png)
 
-\* \*\*n8n execution ID:\*\* ID#414
+* **What changed:** 1 row added to ReviewQueue, 1 row appended to RunLog.
 
-\* \*\*Screenshot path:\*\* `screenshots/T05.png`
 
-\* \*\*What changed:\*\* 1 row added to ReviewQueue, 1 row appended to RunLog.
 
+## T06: Same delivery replayed
 
+* **Input fixture:** Replayed execution of previously successful issue (T03)
 
-\## T06: Same delivery replayed
+* **Expected result:** No duplicate master row
 
-\* \*\*Input fixture:\*\* Replayed execution of previously successful issue (T03)
+* **Actual result:** Caught by the duplicate check node, routed to Duplicate RunLog.
 
-\* \*\*Expected result:\*\* No duplicate master row
+* **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Caught by the duplicate check node, routed to Duplicate RunLog.
+* **n8n execution ID:** ID#415
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+* **Screenshot path:** [`screenshots/T06.png`](screenshots/T06.png)
 
-\* \*\*n8n execution ID:\*\* ID#415
+* **What changed:** 0 row added to MasterIssue, 1 row appended in RunLog (status duplicate_ignored)
 
-\* \*\*Screenshot path:\*\* `screenshots/T06.png`
 
-\* \*\*What changed:\*\* 0 row added to MasterIssue, 1 row appended in RunLog (status duplicate\_ignored)
 
+## T07: Same issue with a new delivery
 
+* **Input fixture:** Pinned webhook data with new `x-github-delivery` ID, but an existing `issue.number`
 
-\## T07: Same issue with a new delivery
+* **Expected result:** Update or duplicate-review path
 
-\* \*\*Input fixture:\*\* Pinned webhook data with new `x-github-delivery` ID, but an existing `issue.number`
+* **Actual result:** Caught by duplicate check based on `issue_key`, routed to Duplicate RunLog.
 
-\* \*\*Expected result:\*\* Update or duplicate-review path
+* **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* Caught by duplicate check based on issue\_key, routed to Duplicate RunLog.
+* **n8n execution ID:** ID#416
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+* **Screenshot path:** [`screenshots/T07.png`](screenshots/T07.png)
 
-\* \*\*n8n execution ID:\*\* ID#416
+* **What changed:** 0 rows added to MasterIssues, 1 row added to RunLog (duplicate_ignored).
 
-\* \*\*Screenshot path:\*\* `screenshots/T07.png`
 
-\* \*\*What changed:\*\* 0 rows added to MasterIssues, 1 row added to RunLog (duplicate\_ignored).
 
+## T08: API 401 (Unauthorized)
 
+ * **Input fixture:** Pinned webhook data, with GitHub API token intentionally invalidated.
 
-\## T08: API 401 (Unauthorized)
+ * **Expected result:** ReviewQueue and RunLog error
 
-\* \*\*Input fixture:\*\* Pinned webhook data, with GitHub API token intentionally invalidated.
+ * **Actual result:** API returned `401`, error safely caught and routed to ReviewQueue.
 
-\* \*\*Expected result:\*\* ReviewQueue and RunLog error
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* API returned 401, error safely caught and routed to ReviewQueue.
+ * **n8n execution ID:** ID#426
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Screenshot path:** [`screenshots/T08.png`](screenshots/T08.png), [`screenshots/T08_unauthorized_api.png`](screenshots/T08_unauthorized_api.png)
 
-\* \*\*n8n execution ID:\*\* ID#426
+ * **What changed:** 1 row added to ReviewQueue, 1 row added to RunLog (api_failure).
 
-\* \*\*Screenshot path:\*\* `screenshots/T08.png`,`screenshots/T08\_unauthorized\_api.png`
 
-\* \*\*What changed:\*\* 1 row added to ReviewQueue, 1 row added to RunLog (api\_failure).
 
+ ## T09: API 404 (Not Found)
 
+ * **Input fixture:** Pinned webhook data requesting a non-existent issue number (99999).
 
-\## T09: API 404 (Not Found)
+ * **Expected result:** ReviewQueue and RunLog error
 
-\* \*\*Input fixture:\*\* Pinned webhook data requesting a non-existent issue number (99999).
+ * **Actual result:** API returned `404` Not Found, error safely caught and routed to ReviewQueue.
 
-\* \*\*Expected result:\*\* ReviewQueue and RunLog error
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* API returned 404 Not Found, error safely caught and routed to ReviewQueue.
+ * **n8n execution ID:** ID#433
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Screenshot path:** [`screenshots/T09.png`](screenshots/T09.png)
 
-\* \*\*n8n execution ID:\*\* ID#433
+ * **What changed:** 1 row added to ReviewQueue, 1 row added to RunLog (resource not found).
 
-\* \*\*Screenshot path:\*\* `screenshots/T09.png`
 
-\* \*\*What changed:\*\* 1 row added to ReviewQueue, 1 row added to RunLog (resource not found).
 
+ ## T10: API 429 (Rate Limit)
 
+ * **Input fixture:** Simulated `429` Rate Limit response from GitHub API.
 
-\## T10: API 429 (Rate Limit)
+ * **Expected result:** Limited retry, then review
 
-\* \*\*Input fixture:\*\* Simulated 429 Rate Limit response from GitHub API.
+ * **Actual result:** HTTP Request node's error output safely catches the `429` status and routes the payload to the ReviewQueue.
 
-\* \*\*Expected result:\*\* Limited retry, then review
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*Actual result:\*\* HTTP Request node's error output safely catches the 429 status and routes the payload to the ReviewQueue.
+ * **n8n execution ID:** ID#434
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Screenshot path:** [`screenshots/T10.png`](screenshots/T10.png)
 
-\* \*\*n8n execution ID:\*\* ID#434
-
-\* \*\*Screenshot path:\*\* `screenshots/T10.png`
-
-\* \*\*What changed:\*\* 1 row added to ReviewQueue, 1 row added to RunLog (api\_failure).
+ * **What changed:** 1 row added to ReviewQueue, 1 row added to RunLog (api_failure).
 
 &#x20;
 
-\## T11: Invalid AI label
+ ## T11: Invalid AI label
 
-\* \*\*Input fixture:\*\* Prompt injection attempting to force output "pizza".
+ * **Input fixture:** Prompt injection attempting to force output "pizza".
 
-\* \*\*Expected result:\*\* ReviewQueue or Schema Rejection
+ * **Expected result:** ReviewQueue or Schema Rejection
 
-\* \*\*Actual result:\*\* Structured Output Parser strictly enforces the enum schema. AI self-corrected to "other" with low confidence.
+ * **Actual result:** Structured Output Parser strictly enforces the enum schema. AI self-corrected to "other" with low confidence.
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*n8n execution ID:\*\* ID#459
+ * **n8n execution ID:** ID#459
 
-\* \*\*Screenshot path:\*\* `screenshots/T12.png`,`screenshots/T12\_ntfy\_alert.png`
+ * **Screenshot path:** [`screenshots/T12.png`](screenshots/T12.png), [`screenshots/T12_ntfy_alert.png`](screenshots/T12_ntfy_alert.png)
 
-\* \*\*What changed:\*\* row appended: ReviewQueue, RunLog; ntfy-alert generated
-
-
-
-\## T12: AI confidence below 0.85
-
-\* \*\*Input fixture:\*\* GitHub Issue with prompt injection confusing the AI to forget rest of instructions.
-
-\* \*\*Expected result:\*\* ReviewQueue, RunLog, ntfy alert
-
-\* \*\*Actual result:\*\* AI returned confidence of 0.6. Caught by AI safety check and routed to ReviewQueue.
-
-\* \*\*Pass or fail:\*\* ✅ PASS
-
-\* \*\*n8n execution ID:\*\* ID#459
-
-\* \*\*Screenshot path:\*\* `screenshots/T12.png`,`screenshots/T12\_ntfy\_alert.png`
-
-\* \*\*What changed:\*\* ReviewQueue/RunLog row appended with ID, ntfy alert with details
+ * **What changed:** row appended: ReviewQueue, RunLog; ntfy-alert generated
 
 
 
-\## T13: Empty body
+ ## T12: AI confidence below 0.85
 
-\* \*\*Input fixture:\*\* GitHub Issue with a title but an empty body.
+ * **Input fixture:** GitHub Issue with prompt injection confusing the AI to forget rest of instructions.
 
-\* \*\*Expected result:\*\* Correctly accepted or reviewed according to documented rule
+ * **Expected result:** ReviewQueue, RunLog, ntfy alert
 
-\* \*\*Actual result:\*\* Passed required fields check (body is not strictly required). Successfully appended to MasterIssues with high ai-confidence:0.9.
+ * **Actual result:** AI returned confidence of 0.6. Caught by AI safety check and routed to ReviewQueue.
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*n8n execution ID:\*\* ID#466
+ * **n8n execution ID:** ID#459
 
-\* \*\*Screenshot path:\*\* `screenshots/T13.png`
+ * **Screenshot path:** [`screenshots/T12.png`](screenshots/T12.png), [`screenshots/T12_ntfy_alert.png`](screenshots/T12_ntfy_alert.png)
 
-\* \*\*What changed:\*\* 1 row added to MasterIssues, 1 row added to RunLog.
+ * **What changed:** ReviewQueue/RunLog row appended with ID, ntfy alert with details
 
 
 
-\## T14: Daily digest rerun
+ ## T13: Empty body
 
-\* \*\*Input fixture:\*\* Manual trigger of Daily Digest workflow executed twice on the same day.
+ * **Input fixture:** GitHub Issue with a title but an empty body.
 
-\* \*\*Expected result:\*\* No duplicate digest
+ * **Expected result:** Correctly accepted or reviewed according to documented rule
 
-\* \*\*Actual result:\*\* First run succeeded. Second run was caught by the date-key duplicate check and safely skipped.
+ * **Actual result:** Passed required fields check (body is not strictly required). Successfully appended to MasterIssues with high ai-confidence:0.9.
 
-\* \*\*Pass or fail:\*\* ✅ PASS
+ * **Pass or fail:** ✅ PASS
 
-\* \*\*n8n execution ID:\*\* ID#471
+ * **n8n execution ID:** ID#466
 
-\* \*\*Screenshot path:\*\* `screenshots/T14\_already\_sent\_daily\_digest.png`
+ * **Screenshot path:** [`screenshots/T13.png`](screenshots/T13.png)
 
-\* \*\*What changed:\*\* 0 rows added to DailyDigest sheet, 0 ntfy alerts sent on the second run.
+ * **What changed:** 1 row added to MasterIssues, 1 row added to RunLog.
+
+
+
+ ## T14: Daily digest rerun
+
+ * **Input fixture:** Manual trigger of Daily Digest workflow executed twice on the same day.
+
+ * **Expected result:** No duplicate digest
+
+ * **Actual result:** First run succeeded. Second run was caught by the date-key duplicate check and safely skipped.
+
+ * **Pass or fail:** ✅ PASS
+
+ * **n8n execution ID:** ID#471
+
+ * **Screenshot path:** [`screenshots/T14_already_sent_daily_digest.png`](screenshots/T14_already_sent_daily_digest.png)
+
+ * **What changed:** 0 rows added to DailyDigest sheet, 0 ntfy alerts sent on the second run.
 
