@@ -1,17 +1,54 @@
-graph TD
-    A[GitHub Webhook] --> B{Is New Issue?}
-    B -- Yes --> C{Required Fields?}
-    B -- No --> D[RunLog: Ignored]
-    C -- Yes --> E{Already Exists?}
-    C -- No --> F[ReviewQueue]
-    E -- No --> G[GitHub API Enrichment]
-    E -- Yes --> H[RunLog: Duplicate]
-    G --> I[Priority Rules & AI Classification]
-    I --> J{AI Safe?}
-    J -- Yes --> K[(MasterIssues Sheet)]
-    J -- No --> F
-    K --> L{Is Urgent?}
-    L -- Yes --> M[ntfy.sh Alert]
-    L -- No --> N[RunLog: Success]
-    M --> N
+---
+title: IssueFlow Architecture
+---
 
+graph TD
+    %% WORKFLOW 1: INTAKE & TRIAGE
+    subgraph Intake [1. Webhook Intake & Validation]
+        A[GitHub Event Payload] --> B{Action == opened?}
+        B -- No --> C[Drop: Prevent Race Condition]
+        B -- Yes --> D{Has Required Fields?}
+        D -- No --> E[ReviewQueue]
+        D -- Yes --> F{Is Duplicate Issue?}
+        F -- Yes --> G[RunLog: Ignored Duplicate]
+    end
+
+    subgraph Enrichment [2. API & Priority Engine]
+        F -- No --> H[GitHub REST API]
+        H -- 401/404/429 --> E
+        H -- 200 OK --> I{Deterministic Priority Rules}
+        I --> J[Tag: Urgent/High/Normal/Low]
+    end
+
+    subgraph AI [3. AI Classification]
+        J --> K[LLM: Groq / Llama 3]
+        K --> L[Structured Output Parser]
+        L -- Schema Error --> E
+        L -- Success --> M{Confidence > 0.85?}
+        M -- No --> E
+    end
+
+    subgraph Output [4. Datastore & Observability]
+        M -- Yes --> N[(MasterIssues Datastore)]
+        N --> O{Priority == Urgent?}
+        O -- Yes --> P[ntfy.sh Push Alert]
+        O -- No --> Q[RunLog: Success]
+        P --> Q
+    end
+
+    %% WORKFLOW 2: DAILY DIGEST
+    subgraph DigestTrigger [5. Digest Trigger]
+        Z[Cron Schedule: 9:00 AM] --> Y[(Read MasterIssues)]
+    end
+
+    subgraph DigestLogic [6. Aggregation & Safety]
+        Y --> X[Filter: Open Issues Only]
+        X --> W[Code Node: Aggregate Metrics]
+        W --> V{Already Sent Today?}
+        V -- Yes --> U[Log: Skipped]
+    end
+    
+    subgraph DigestOutput [7. Delivery]
+        V -- No --> T[(Write to DailyDigest)]
+        T --> S[ntfy.sh Daily Summary Alert]
+    end
